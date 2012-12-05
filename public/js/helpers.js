@@ -5,8 +5,12 @@ var Helper = {
 
   light_color: function(light) {
     var color;
-    if( light.colormode == "ct" ) {
-      color = Helper.ct_to_rgb(light.ct);
+    if( light.colormode == "xy" ) {
+      color = this.xy_to_rgb(light.xy);
+      color = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+    } else if( light.colormode == "ct" ) {
+      color = this.ct_to_rgb(light.ct);
+      color = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
     } else if( light.colormode == "hs" ) {
       color = "hsl(" + (light.hue / 182.02) + "," + (light.sat / HueData.sat.max) * 100 + "%," + (light.bri / (HueData.bri.max + 146)) * 100 + "%)";
     }
@@ -127,11 +131,54 @@ var Helper = {
     return $.ajax(url, args);
   },
 
+  // Credit to https://github.com/Shushik/i-color
+  xy_to_rgb: function(xy) {
+    var x = xy[0], y = xy[1], z = (1 - xy[0] - xy[1]);
+
+    var rgb = {};
+    rgb.r = x * 3.2406 + y * -1.5372 + z * -0.4986;
+    rgb.g = x * -0.9689 + y * 1.8758 + z * 0.0415;
+    rgb.b = x * 0.0557 + y * -0.2040 + z * 1.0570;
+
+    for( var type in rgb ) {
+      if( rgb[type] > 0.0031308 ) {
+        rgb[type] = 1.055 * Math.pow(rgb[type], (1 / 2.4)) - 0.055;
+      } else {
+        rgb[type] *= 12.92;
+      }
+
+      rgb[type] = Math.min(255, Math.max(Math.round(rgb[type] * 255), 0));
+    }
+
+    return rgb;
+  },
+
+  // Credit to https://github.com/AaronH/RubyHue, which got it from http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code
   ct_to_rgb: function(ct) {
-    // We have a table based on 100s and it's probably not necessary to have accuracy below that anyway.
-    // so we need to convert whatever value we have into a number rounded to the hundreds.
-    ct = Math.floor((1000000 / ct) / 100) * 100;
-    return this.DATA.ct[ct.toString()];
+    ct = (1000000 / ct) / 100;
+
+    var rgb = {};
+    rgb.r = ct <= 66 ? 255 : 329.698727446 * Math.pow((ct - 60), -0.1332047592);
+
+    if( ct <= 66 ) {
+      rgb.g = 99.4708025861 * Math.log(ct) - 161.1195681661;
+    } else {
+      rgb.g = 288.1221695283 * Math.pow((ct - 60), -0.0755148492);
+    }
+
+    if( ct >= 66 ) {
+      rgb.b = 255;
+    } else if( ct <= 19 ) {
+      rgb.b = 0;
+    } else {
+      rgb.b = 138.5177312231 * Math.log(ct - 10) - 305.0447927307;
+    }
+
+    for( var type in rgb ) {
+      rgb[type] = Math.min(255, Math.max(0, Math.round(rgb[type])));
+    }
+
+    return rgb;
   },
 
   // From http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
