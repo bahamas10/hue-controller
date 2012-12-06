@@ -43,16 +43,16 @@
         .control-group
           %label.control-label{:for => "job_hue"} Hue
           .controls
-            %input.input-mini{:id => "job_hue", :placeholder => $hue[:hue][:max], :min => $hue[:hue][:min], :max => $hue[:hue][:max], :step => 1}
+            %input.input-mini{:id => "job_hue", :placeholder => self.hue_data[:hue][:max], :min => self.hue_data[:hue][:min], :max => self.hue_data[:hue][:max], :step => 1}
             %span.help-inline
-              #{$hue[:hue][:min]} - #{$hue[:hue][:max]}
+              #{self.hue_data[:hue][:min]} - #{self.hue_data[:hue][:max]}
 
         .control-group
           %label.control-label{:for => "job_sat"} Saturation
           .controls
-            %input.input-mini{:type => "number", :id => "job_sat", :placeholder => $hue[:sat][:max], :min => $hue[:sat][:min], :max => $hue[:sat][:max], :step => 1}
+            %input.input-mini{:type => "number", :id => "job_sat", :placeholder => self.hue_data[:sat][:max], :min => self.hue_data[:sat][:min], :max => self.hue_data[:sat][:max], :step => 1}
             %span.help-inline
-              #{$hue[:sat][:min]} - #{$hue[:sat][:max]}
+              #{self.hue_data[:sat][:min]} - #{self.hue_data[:sat][:max]}
 
         .control-group
           %label.control-label{:for => "job_colorpicker"} Color
@@ -63,16 +63,16 @@
         .control-group
           %label.control-label{:for => "job_ct"} Color Temperature
           .controls
-            %input.input-mini{:type => "number", :id => "job_ct", :placeholder => $hue[:ct][:max], :min => $hue[:ct][:min], :max => $hue[:ct][:max], :step => 1}
+            %input.input-mini{:type => "number", :id => "job_ct", :placeholder => self.hue_data[:ct][:max], :min => self.hue_data[:ct][:min], :max => self.hue_data[:ct][:max], :step => 1}
             %span.help-inline
-              #{$hue[:ct][:min]} (cold/white) - #{$hue[:ct][:max]} (warm)
+              #{self.hue_data[:ct][:min]} (cold/white) - #{self.hue_data[:ct][:max]} (warm)
 
   .control-group
     %label.control-label{:for => "job_bri"} Brightness
     .controls
-      %input.input-mini{:type => "number", :id => "job_bri", :placeholder => $hue[:bri][:max], :min => $hue[:bri][:min], :max => $hue[:bri][:max], :step => 1}
+      %input.input-mini{:type => "number", :id => "job_bri", :placeholder => self.hue_data[:bri][:max], :min => self.hue_data[:bri][:min], :max => self.hue_data[:bri][:max], :step => 1}
       %span.help-inline
-        #{$hue[:bri][:min]} (off) - #{$hue[:bri][:max]} (max brightness)
+        #{self.hue_data[:bri][:min]} (off) - #{self.hue_data[:bri][:max]} (max brightness)
 
   .control-group
     %label.control-label{:for => "job_alert"} Alert

@@ -11,8 +11,8 @@
     %script{:src => "/js/bootstrap.min.js"}
     %script{:src => "/js/helpers.js"}
     :javascript
-      var hub_info = #{$config.to_json};
-      var HueData = #{$hue.to_json};
+      var hub_info = #{self.config.to_json};
+      var HueData = #{self.hue_data.to_json};
 
   %body
     .navbar.navbar-fixed-top

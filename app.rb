@@ -1,20 +1,29 @@
-require "rubygems"
-require "bundler/setup"
-require "sinatra"
-require "yaml"
-require "json"
-require "uri"
-require "net/http"
-require "digest/sha1"
+class HueController < Sinatra::Base
+  attr_reader :config, :hue_data
+  set :public, "public"
 
-$LOAD_PATH.unshift(File.expand_path("../", __FILE__))
+  def initialize
+    super
 
-if File.exists?("./config/config.yml")
-  $config = YAML::load_file("./config/config.yml")
-else
-  $config = {}
+    if File.exists?("./config/config.yml")
+      @config = YAML::load_file("./config/config.yml")
+    else
+      @config = {}
+    end
+
+    @hue_data = YAML::load_file("./config/hue.yml")
+  end
+
+  def save_config(config)
+    self.config.merge!(config)
+
+    unless File.directory?("./config/")
+      require "fileutils"
+      FileUtils.mkdir("./config/")
+    end
+
+    File.open("./config/config.yml", "w+") do |f|
+      f.write(self.config.to_yaml)
+    end
+  end
 end
-
-$hue = YAML::load_file("./config/hue.yml")
-
-Dir["./controllers/*.rb"].each {|f| require f}

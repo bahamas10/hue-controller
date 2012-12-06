@@ -6,16 +6,16 @@
   %span
 
 %form.form-horizontal{:method => "POST", :action => "/config"}
-  - unless $config[:ip]
+  - unless self.config[:ip]
     %input{:type => :hidden, :id => "username", :value => @username}
 
   .control-group
     %label.control-label{:for => "ip"} Hub IP
     .controls
-      %input{:type => :text, :id => "ip", :value => $config[:ip], :placeholder => "192.168.1.1"}
+      %input{:type => :text, :id => "ip", :value => self.config[:ip], :placeholder => "192.168.1.1"}
       %span.help-inline
 
-  - unless $config[:ip]
+  - unless self.config[:ip]
     .control-group
       %label.control-label{:for => "devicetype"} Name
       .controls
