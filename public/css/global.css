@@ -8,3 +8,19 @@ body {
   border: 1px solid black;
   display: inline-block;
 }
+
+input.error {
+  border-color: #B94A48 !important;
+}
+
+input.success {
+  border-color: #468847 !important;
+}
+
+span.error {
+  color: #B94A48 !important;
+}
+
+span.success {
+  color: #468847 !important;
+}
