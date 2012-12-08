@@ -3,13 +3,14 @@ class HueController < Sinatra::Base
     haml :sets, :locals => {:action => "sets"}
   end
 
+  # Create set
   post "/set" do
     self.config[:sets] ||= {}
 
-    id = self.config[:sets].keys.max.to_i + 1
+    set_id = self.config[:sets].keys.max.to_i + 1
 
-    self.config[:sets][id] = {:name => params[:name]}
-    self.config[:sets][id][:lights] = params[:lights].map do |id, light|
+    self.config[:sets][set_id] = {:name => params[:name]}
+    self.config[:sets][set_id][:lights] = params[:lights].map do |id, light|
       data = {:light => id.to_s, :on => light[:on] == "true", :colormode => light[:colormode]}
 
       if data[:on]
@@ -35,10 +36,32 @@ class HueController < Sinatra::Base
     204
   end
 
+  # Show the state of a set
   get "/set/state/:id" do
     haml :set_state, :layout => false, :locals => {:set => self.config[:sets][params[:id].to_i]}
   end
 
+  # Delete set
+  delete "/set/:id" do
+    self.config[:sets].delete(params[:id].to_i)
+    self.save_config(:sets => self.config[:sets])
+
+    204
+  end
+
+  # Turn all the lights in a set off
+  delete "/set/apply/:id" do
+    require "net/http"
+    http = Net::HTTP.new(self.config[:ip], 80)
+
+    self.config[:sets][params[:id].to_i][:lights].each do |light|
+      http.request_put("/api/#{self.config[:apikey]}/lights/#{light[:light]}/state", {:on => false}.to_json)
+    end
+
+    204
+  end
+
+  # Apply a set
   post "/set/apply/:id" do
     set = self.config[:sets][params[:id].to_i]
 
@@ -66,13 +89,6 @@ class HueController < Sinatra::Base
       puts light[:light]
       puts res.body
     end
-
-    204
-  end
-
-  delete "/set/:id" do
-    self.config[:sets].delete(params[:id].to_i)
-    self.save_config(:sets => self.config[:sets])
 
     204
   end

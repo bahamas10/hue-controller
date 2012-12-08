@@ -2,6 +2,7 @@
 %p Store the settings of your current lights for quick restoring.
 %p "Apply + Off Rest" will re-apply a set and turn off any lights not in the set.
 %p "Apply + Keep" will simply re-apply a set and ignore any lights not in the set.
+%p "Set Off" will turn any lights in the set off.
 
 %a.btn.btn-success#save-set{:href => "#"} Save Set
 
@@ -12,6 +13,7 @@
       %th.center Lights
       %th.center Apply + Off Rest
       %th.center Apply + Keep Rest
+      %th.center Set Off
       %th.center Delete
 
   %tbody
@@ -29,6 +31,10 @@
         %td.center
           %a.btn.btn-mini.btn-info.apply{"data-set" => id, "data-mode" => "ignore", "data-loading-text" => "Applying"}
             Apply + Keep Rest
+
+        %td.center
+          %a.btn.btn-mini.btn-inverse.apply{"data-set" => id, "data-mode" => "set-off", "data-loading-text" => "Applying"}
+            Set Off
 
         %td.center
           %a.btn.btn-mini.btn-danger.delete{"data-set" => id, "data-loading-text" => "Deleting"}

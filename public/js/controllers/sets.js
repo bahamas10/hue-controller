@@ -22,6 +22,7 @@
 
   $(".delete").click(function(event) {
     event.preventDefault();
+    if( !confirm("Are you sure?") ) return;
 
     $(this).button("loading");
     $.ajax("/set/" + $(this).data("set"), {type: "DELETE", complete: function() { window.location.reload(); }});
@@ -33,13 +34,20 @@
     $(this).button("loading");
     $(".apply").addClass("disabled");
 
-    $.ajax("/set/apply/" + $(this).data("set"), {
-      type: "POST",
+    var data = {
       data: {mode: $(this).data("mode")},
       complete: function() {
         window.location.reload();
       }
-    });
+    };
+
+    if( $(this).data("mode") == "set-off") {
+      data.type = "DELETE";
+    } else {
+      data.type = "POST";
+    }
+
+    $.ajax("/set/apply/" + $(this).data("set"), data);
   });
 
   $("#new-set").submit(function(event) {
