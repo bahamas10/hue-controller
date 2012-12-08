@@ -39,7 +39,6 @@ class HueController < Sinatra::Base
     haml :set_state, :layout => false, :locals => {:set => self.config[:sets][params[:id].to_i]}
   end
 
-
   post "/set/apply/:id" do
     set = self.config[:sets][params[:id].to_i]
 
