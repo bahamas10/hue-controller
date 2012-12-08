@@ -1,12 +1,12 @@
 Overview
 ===
-Adds a wrapper around the hue API to give you better flexibility than you get with the apps without having to manually write the API calls.
+With this, you get full control over your Hue light bulbs. You can easily view light status, do complex controls of your lights such as pulsing a color.
 
-Unlike the app, you have more granular access to the exposed functionality, such as queuing by date rather than just time. In addition to helpers like "Queue this 5 times every 5 seconds start on 2012-10-10 at 5 PM"
+Sets let you save a light configuration and then easily restore or turn it off later. You can even use this on simple browsers like a Kindle. No need to find your phone to turn on reading lights, or turn them off after you're done.
 
 Browser requirements
 -
-The general web app will work under most modern browser browsers. IE8 and below are not supported, but some areas might work. Color pickers requires that your browser support it, which currently means only Chrome.
+The goal is for most of this to work under modern browsers. Some improved functionality, such as color pickers will require Chrome.
 
 Examples
 -
@@ -19,7 +19,7 @@ You will need ruby installed (this is all tested against ruby-1.9.3-p327, but an
 
 If you don't have bundler installed yet, you will need to do `gem install bundler` before running `bundle install`.
 
-Run `bundle install` in the directory to install the necessary gems, and then just `thin -R config.ru -p 9200 -e production start` and that's it. You can then navigate to localhost:9200 and play with this.
+Run `bundle install` in the directory to install the necessary gems, and then just `thin -R config.ru -p 9200 -e production start` and that's it! Navigate to localhost:9200 and enjoy
 
 Contributing
 -
