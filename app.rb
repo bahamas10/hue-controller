@@ -27,9 +27,17 @@ class HueController < Sinatra::Base
   end
 
   def save_config(data)
-    # Make sure something changed so we aren't needlessly writing data
-    return if @config.merge(data) == @config
     @config.merge!(data)
+
+    current_hash = @config.delete(:hash)
+    data_hash = Digest::MD5.hexdigest(@config.to_s)
+    # No change
+    if data_hash == current_hash
+      @config[:hash] = current_hash
+      return
+    end
+
+    @config[:hash] = data_hash
 
     unless File.directory?("./config/")
       require "fileutils"
