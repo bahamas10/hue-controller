@@ -97,15 +97,22 @@
 
         // Keep track of reachable lights
         active_lights = {};
+
+        var names = {};
         for( var id in data.lights ) {
           if( data.lights[id].state.reachable ) {
             active_lights[id] = data.lights[id];
           }
+
+          names[id] = data.lights[id].name;
         }
 
         if( !loaded ) {
           loaded = true;
           $("#lights-off, #lights-on").removeClass("disabled");
+
+          // Also push the light data so we can cache it on the backend
+          $.ajax("/cache-data", {type: "PUT", data: {lights: names}});
         }
 
         if( onload ) onload();
