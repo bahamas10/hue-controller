@@ -25,6 +25,10 @@
               %a{:href => "/"} Lights
 
           %ul.nav
+            %li{:class => action == "sets" ? "active": ""}
+              %a{:href => "/sets"} Light Sets
+
+          %ul.nav
             %li{:class => action == "schedules" ? "active": ""}
               %a{:href => "/schedules"} Schedules
 

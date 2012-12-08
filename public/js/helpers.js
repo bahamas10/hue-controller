@@ -3,8 +3,17 @@ var Helper = {
     $("#error").removeClass("hide").find("span").html(error);
   },
 
+  process_colorblocks: function(scope) {
+    $(scope).find(".colorblock[data-state]").each(function() {
+      var block = $(this);
+
+      var color = Helper.light_color(block.data("state"));
+      block.data("state", null).attr("data-state", null).css("background-color", color);
+    });
+  },
+
   light_color: function(light) {
-    var color;
+    console.log(light.colormode);
     if( light.colormode == "xy" ) {
       color = this.xy_to_rgb(light.xy);
       color = "rgb(" + color.r + "," + color.g + "," + color.b + ")";

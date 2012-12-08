@@ -1,0 +1,39 @@
+.modal-header
+  %h3 #{set[:name]}
+
+.modal-body
+  %table.table-bordered.table-striped.table
+    %thead
+      %tr
+        %th Light
+        %th.center State
+        %th.center Bri
+        %th.center Color
+    %tbody
+      - set[:lights].each do |state|
+        %tr
+          %td= self.config[:lights][state[:light]]
+          %td.center
+            %strong
+              - if state[:on]
+                %span.text-success On
+              - else
+                %span.text-error Off
+
+          - if state[:on]
+            %td.center
+              - if state[:bri]
+                - if state[:bri] > self.hue_data[:bri][:min]
+                  = "%.2f%%" % ((state[:bri] / self.hue_data[:bri][:max].to_f) * 100)
+                - else
+                  0%
+              - else
+                \---
+            %td.center
+              .colorblock{"data-state" => state.to_json}
+          - else
+            %td.center ---
+            %td.center ---
+
+.modal-footer
+  %a.btn.btn-small{"data-dismiss" => "modal", :href => "#"} Close

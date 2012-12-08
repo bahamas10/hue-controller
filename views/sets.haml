@@ -1,0 +1,75 @@
+%h1 Light Sets
+%p Store the settings of your current lights for quick restoring.
+%p "Apply + Off Rest" will re-apply a set and turn off any lights not in the set.
+%p "Apply + Keep" will simply re-apply a set and ignore any lights not in the set.
+
+%a.btn.btn-success#save-set{:href => "#"} Save Set
+
+%table.table.table-striped.table-bordered#sets
+  %thead
+    %tr
+      %th Name
+      %th.center Lights
+      %th.center Apply + Off Rest
+      %th.center Apply + Keep Rest
+      %th.center Delete
+
+  %tbody
+    - (@config[:sets] || {}).each do |id, set|
+      %tr
+        %td= set[:name]
+        %td.center
+          %a.view-state{"data-set" => id}
+            View
+
+        %td.center
+          %a.btn.btn-mini.apply{"data-set" => id, "data-mode" => "off", "data-loading-text" => "Applying"}
+            Apply + Reset Rest
+
+        %td.center
+          %a.btn.btn-mini.btn-info.apply{"data-set" => id, "data-mode" => "ignore", "data-loading-text" => "Applying"}
+            Apply + Keep Rest
+
+        %td.center
+          %a.btn.btn-mini.btn-danger.delete{"data-set" => id, "data-loading-text" => "Deleting"}
+            Delete
+
+    - if !@config[:sets] or @config[:sets].empty?
+      %tr
+        %td.center{:colspan => 5}
+          %strong.text-error No sets found, add one by clicking "Save Set""
+
+%form.form-horizontal#new-set{:action => "POST"}
+  .modal.hide
+    .modal-header
+      %h3 New Set
+    .modal-body
+      .control-group
+        %label.control-label{:for => "name"} Set Name
+        .controls
+          %input.input-medium{:type => "text", :id => "name", :placeholder => "Romantic"}
+          %span.help-inline Help identify the set
+
+      .control-group
+        %label.control-label{:for => "lights"} Lights
+        .controls
+          %select{:id => "lights", :multiple => "multiple"}
+            - @config[:lights].each do |id, name|
+              %option{:value => id}= name
+
+          %span.help-block Which lights should be included in this set
+
+    .modal-footer
+      %input.btn.btn-success.pull-right{:type => :submit, :value => "Save", "data-loading-text" => "Saving..."}
+
+
+#view-state.modal.hide
+  .modal-header
+    %h3
+
+  .modal-body
+    %p
+      %strong Loading...
+
+  .modal-footer
+    %a.btn.btn-small{"data-dismiss" => "modal", :href => "#"} Close
