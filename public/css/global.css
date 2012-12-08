@@ -24,3 +24,11 @@ span.error {
 span.success {
   color: #468847 !important;
 }
+
+td.center, th.center {
+  text-align: center;
+}
+
+table {
+  width: 100%;
+}
