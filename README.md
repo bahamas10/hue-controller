@@ -6,7 +6,7 @@ Sets let you save a light configuration and then easily restore or turn it off l
 
 Browser requirements
 -
-The goal is for most of this to work under modern browsers. Some improved functionality, such as color pickers will require Chrome.
+The goal is for most of this to work under modern browsers. Any reasonably up to date version of Chrome, Firefox or Safari should work fine. IE9 and up should also work, but isn't guaranteed.
 
 Examples
 -

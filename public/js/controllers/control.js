@@ -1,24 +1,18 @@
 (function() {
-  var supports_colorpicker = document.getElementById("job_colorpicker").type == "color";
   $(".tabbable ul li a").click(function(event) {
       event.preventDefault();
       $(this).tab("show");
 
-      if( supports_colorpicker ) $("#use_colorpicker").trigger("change");
+      $("#use_colorpicker").trigger("change");
   });
 
-  if( supports_colorpicker ) {
-    // Toggle colorpicker and see if it's enableable
-    $("#use_colorpicker").change(function() {
-      var val = $(this).is(":visible") && $(this).val() == "true";
-      $("#job_hue, #job_sat, #job_bri").closest(".control-group")[val ? "hide" : "show"]();
-      $("#job_colorpicker").closest(".control-group")[val ? "show" : "hide"]();
-    });
-    $("#use_colorpicker").trigger("change");
-  } else {
-    $("#job_hue, #job_sat, #job_bri").closest(".control-group").show();
-    $("#use_colorpicker, #job_colorpicker").closest(".control-group").hide();
-  }
+  // Toggle colorpicker and see if it's enableable
+  $("#use_colorpicker").change(function() {
+    var val = $(this).is(":visible") && $(this).val() == "true";
+    $("#job_hue, #job_sat, #job_bri").closest(".control-group")[val ? "hide" : "show"]();
+    $("#job_colorpicker").closest(".control-group")[val ? "show" : "hide"]();
+  });
+  $("#use_colorpicker").trigger("change");
 
   // Figure out the lights available
   Helper.request({
