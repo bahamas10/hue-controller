@@ -1,9 +1,4 @@
 (function() {
-  $("#sets .colorblock[data-state]").each(function() {
-    var block = $(this);
-    console.log(block);
-  });
-
   $("#save-set").click(function(event) {
     event.preventDefault();
 
