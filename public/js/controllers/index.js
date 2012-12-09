@@ -99,7 +99,8 @@
         active_lights = {};
 
         var names = {};
-        for( var id in data.lights ) {
+        var id;
+        for( id in data.lights ) {
           if( data.lights[id].state.reachable ) {
             active_lights[id] = data.lights[id];
           }
@@ -107,12 +108,19 @@
           names[id] = data.lights[id].name;
         }
 
+        var groups = {};
+        if( data.groups ) {
+          for( id in data.groups ) {
+            groups[id] = {name: data.groups[id].name, lights: data.groups[id].lights}
+          }
+        }
+
         if( !loaded ) {
           loaded = true;
           $("#lights-off, #lights-on").removeClass("disabled");
 
           // Also push the light data so we can cache it on the backend
-          $.ajax("/cache-data", {type: "PUT", data: {lights: names}});
+          $.ajax("/cache-hub", {type: "PUT", data: {groups: groups, lights: names}});
         }
 
         if( onload ) onload();

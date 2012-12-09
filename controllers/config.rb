@@ -3,11 +3,16 @@ class HueController < Sinatra::Base
     haml :config, :locals => {:action => "config", :no_action_css => true}
   end
 
-  put "/cache-data" do
+  put "/cache-hub" do
     lights = {}
     params[:lights].each {|k, v| lights[k.to_s] = v.to_s}
 
-    self.save_config(:lights => lights)
+    groups = {}
+    params[:groups].each do |k, v|
+      groups[k] = {:name => v["name"], :lights => v["lights"] ? v["lights"].map {|l| l.to_i} : []}
+    end
+
+    self.save_hub_data(:lights => lights, :groups => groups)
     204
   end
 

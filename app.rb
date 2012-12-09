@@ -1,6 +1,15 @@
 class HueController < Sinatra::Base
   attr_reader :config, :hue_data
-  set :public, "public"
+  attr_accessor :hub_data, :jobs
+  set :public_folder, "public"
+
+  configure :development do
+    require "sinatra/reloader"
+    register Sinatra::Reloader
+
+    also_reload "./controllers/*.rb"
+    also_reload "./app.rb"
+  end
 
   def initialize
     super
@@ -11,6 +20,13 @@ class HueController < Sinatra::Base
       @config = {}
     end
 
+    if File.exists?("./config/hub_data.yml")
+      self.hub_data = YAML::load_file("./config/hub_data.yml")
+    else
+      self.hub_data = {:lights => {}, :groups => {}}
+    end
+
+    self.jobs = YAML::load_file("./config/jobs.yml")
     @hue_data = YAML::load_file("./config/hue.yml")
   end
 
@@ -29,23 +45,46 @@ class HueController < Sinatra::Base
   def save_config(data)
     @config.merge!(data)
 
-    current_hash = @config.delete(:hash)
-    data_hash = Digest::MD5.hexdigest(@config.to_s)
+    File.open("./config/config.yml", "w+") do |f|
+      f.write(@config.to_yaml)
+    end
+  end
+
+  # Save hub data
+  def save_hub_data(data)
+    self.hub_data.merge!(data)
+
+    current_hash = self.hub_data.delete(:hash)
+    data_hash = Digest::MD5.hexdigest(self.hub_data.to_s)
     # No change
     if data_hash == current_hash
-      @config[:hash] = current_hash
+      self.hub_data[:hash] = current_hash
       return
     end
 
-    @config[:hash] = data_hash
+    self.hub_data[:hash] = data_hash
 
-    unless File.directory?("./config/")
-      require "fileutils"
-      FileUtils.mkdir("./config/")
+    File.open("./config/hub_data.yml", "w+") do |f|
+      f.write(self.hub_data.to_yaml)
     end
+  end
 
-    File.open("./config/config.yml", "w+") do |f|
-      f.write(@config.to_yaml)
+  # The background worker will
+  def queue_job(job)
+    self.jobs = YAML::load_file("./config/jobs.yml")
+    self.jobs.push(job)
+
+    File.open("./config/jobs.yml", "w+") do |f|
+      f.write(self.jobs.to_yaml)
+    end
+  end
+
+  def remove_job(id)
+    self.jobs = YAML::load_file("./config/jobs.yml")
+    self.jobs.delete_if {|v| v[:id] == id}
+
+    File.open("./config/jobs.yml", "w+") do |f|
+      f.write(self.jobs.to_yaml)
     end
   end
 end
