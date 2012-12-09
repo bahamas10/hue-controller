@@ -85,9 +85,7 @@ class HueController < Sinatra::Base
       data = light.dup
       data.delete(:colormode)
 
-      res = http.request_put("/api/#{self.config[:apikey]}/lights/#{data.delete(:light)}/state", data.to_json)
-      puts light[:light]
-      puts res.body
+      http.request_put("/api/#{self.config[:apikey]}/lights/#{data.delete(:light)}/state", data.to_json)
     end
 
     204
