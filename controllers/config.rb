@@ -5,7 +5,7 @@ class HueController < Sinatra::Base
 
   put "/cache-hub" do
     lights = {}
-    params[:lights].each {|k, v| lights[k.to_s] = v.to_s}
+    params[:lights].each {|k, v| lights[k.to_s] = {:name => v["name"].to_s}}
 
     groups = {}
     params[:groups].each do |k, v|

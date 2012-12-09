@@ -12,7 +12,7 @@
     %tbody
       - set[:lights].each do |state|
         %tr
-          %td= self.config[:lights][state[:light]]
+          %td= self.hub_data[:lights][state[:light]][:name]
           %td.center
             %strong
               - if state[:on]

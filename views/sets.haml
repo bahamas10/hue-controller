@@ -60,8 +60,8 @@
         %label.control-label{:for => "lights"} Lights
         .controls
           %select{:id => "lights", :multiple => "multiple"}
-            - @config[:lights].each do |id, name|
-              %option{:value => id}= name
+            - self.hub_data[:lights].each do |id, light|
+              %option{:value => id}= light[:name]
 
           %span.help-block Which lights should be included in this set
 

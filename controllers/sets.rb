@@ -73,7 +73,7 @@ class HueController < Sinatra::Base
       active = {}
       set[:lights].each {|l| active[l[:light]] = true}
 
-      self.config[:lights].each_key do |id|
+      self.hub_data[:lights].each_key do |id|
         next if active[id]
 
         http.request_put("/api/#{self.config[:apikey]}/lights/#{id}/state", {:on => false}.to_json)

@@ -105,7 +105,7 @@
             active_lights[id] = data.lights[id];
           }
 
-          names[id] = data.lights[id].name;
+          names[id] = {name: data.lights[id].name};
         }
 
         var groups = {};
