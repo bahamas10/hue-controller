@@ -26,3 +26,9 @@ Contributing
 Pull requests are more than welcome if you want to add new functionality or ways of extending the Hue lightbulbs.
 
 You can find documentation on the API at: http://blog.ef.net/2012/11/02/philips-hue-api.html
+
+Disclaimer
+-
+All of this uses the standard APIs, but it does give you more granular access to the API than the official apps do.
+
+While you shouldn't be able to break your lights by using this, if you set your lights to pulse every 100ms for 6 hours and they break, it's your own fault.
