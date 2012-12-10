@@ -1,5 +1,5 @@
 class HueController < Sinatra::Base
-  attr_accessor :config, :hue_data, :communicator, :hub_data, :jobs
+  attr_accessor :config, :hue_data, :communicator, :hub_data, :jobs, :jobs_mtime
   set :public_folder, "public"
 
   configure :development do
@@ -27,8 +27,9 @@ class HueController < Sinatra::Base
     end
 
     self.jobs = YAML::load_file("./config/jobs.yml")
-    self.communicator = HubCommunicator.new(self.config)
+    self.jobs_mtime = File.mtime("./config/jobs.yml")
     self.hue_data = YAML::load_file("./config/hue.yml")
+    self.communicator = HubCommunicator.new(self.config)
   end
 
   protected
@@ -72,7 +73,9 @@ class HueController < Sinatra::Base
 
   def update_jobs(reload=true)
     if reload
-      self.jobs = YAML::load_file("./config/jobs.yml")
+      if self.jobs_mtime != File.mtime("./config/jobs.yml")
+        self.jobs = YAML::load_file("./config/jobs.yml")
+      end
     end
 
     if block_given?
@@ -82,5 +85,7 @@ class HueController < Sinatra::Base
     File.open("./config/jobs.yml", "w+") do |f|
       f.write(self.jobs.to_yaml)
     end
+
+    self.jobs_mtime = File.mtime("./config/jobs.yml")
   end
 end
