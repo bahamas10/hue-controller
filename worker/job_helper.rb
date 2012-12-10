@@ -30,9 +30,9 @@ module Worker
         # anything that we list here is immediately being flipped.
 
         # First run of the job, and we need to flip the state for some of them already
-        if @job[:started_at_end] and @job_state[:runs_left] == @job[:times_to_run]
-          @job[:started_at_end].each do |type, id|
-            color_at[type][id] = :start
+        if @job[:initial_state] and @job_state[:runs_left] == @job[:times_to_run]
+          @job[:initial_state].each do |type, id, state|
+            color_at[type][id] = state == :end ? :start : :end
           end
         end
 

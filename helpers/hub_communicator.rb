@@ -19,7 +19,7 @@ class HubCommunicator
     # add extra modes such as randomization later if we wanted, rather than straight alternating.
     if effect[:alternate]
       effect = effect.dup
-      effect[:started_at_end] = []
+      effect[:initial_state] = []
 
       id = 0
       states.each do |state|
@@ -27,9 +27,9 @@ class HubCommunicator
         if (id % 2) == 0
           state.merge!(effect[:end_color])
           if state[:group]
-            effect[:started_at_end].push([:group, state[:group]])
+            effect[:initial_state].push([:groups, state[:group], :end])
           else
-            effect[:started_at_end].push([:light, state[:light]])
+            effect[:initial_state].push([:lights, state[:light], :end])
           end
         end
       end
