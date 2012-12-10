@@ -33,8 +33,6 @@ class HubCommunicator
           end
         end
       end
-
-      puts states.to_yaml
     end
 
     self.apply_states(states)
