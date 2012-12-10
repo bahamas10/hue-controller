@@ -161,6 +161,54 @@ var Helper = {
     return rgb;
   },
 
+  hex_to_hsv: function(hex) {
+    var rgb = {r: 0, g: 0, b: 0};
+
+    if( hex.length == 7 ) hex = hex.replace("#", "");
+    if( hex.length == 3 ) {
+      rgb.r = parseInt((hex.substring(0, 1) + hex.substring(0, 1)), 16);
+      rgb.g = parseInt((hex.substring(1, 2) + hex.substring(1, 2)), 16);
+      rgb.b = parseInt((hex.substring(2, 3) + hex.substring(2, 3)), 16);
+    } else {
+      rgb.r = parseInt(hex.substring(0, 2), 16);
+      rgb.g = parseInt(hex.substring(2, 4), 16);
+      rgb.b = parseInt(hex.substring(4, 6), 16);
+    }
+
+    return this.rgb_to_hsv(rgb);
+  },
+
+  rgb_to_hsv: function(rgb) {
+    for( var key in rgb ) rgb[key] /= 255;
+
+    var min = Math.min(rgb.r, rgb.g, rgb.b);
+    var max = Math.max(rgb.r, rgb.g, rgb.b);
+    var delta = max - min;
+
+    var hsv = {};
+    hsv.v = max;
+    hsv.s = delta > 0 ? (delta / max) : 0;
+
+    if( hsv.s <= 0 ) {
+      hsv.h = 0;
+    } else {
+      if( rgb.r == max ) {
+        hsv.h = (rgb.g - rgb.b) / delta;
+      } else if( rgb.g == max ) {
+        hsv.h = 2 + (rgb.b - rgb.r ) / delta;
+      } else {
+        hsv.h = 4 + (rgb.r - rgb.g ) / delta;
+      }
+
+      if( hsv.v < 0 ) hsv.v += 360;
+      hsv.h = parseInt(hsv.h * 60 * 182.04);
+    }
+
+    hsv.s = parseInt(hsv.s * 254);
+    hsv.v = parseInt(hsv.v * 254);
+    return hsv;
+  },
+
   // Credit to https://github.com/AaronH/RubyHue, which got it from http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code
   ct_to_rgb: function(ct) {
     ct = (1000000 / ct) / 100;
