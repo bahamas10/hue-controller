@@ -36,6 +36,8 @@ class HueController < Sinatra::Base
       self.save_config(:sets => self.config[:sets])
 
     else
+      effect = self.communicator.apply_initial_effect(effect)
+
       self.update_jobs do
         self.jobs.push(effect)
       end
