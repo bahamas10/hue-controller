@@ -11,7 +11,10 @@ end.parse!(ARGV)
 
 $stdout.sync = true
 
-Dir["./worker/*.rb"].each {|f| require f}
+require "./worker/job_helper.rb"
+
+Dir["./helpers/*.rb"].each {|f| require f}
+Dir["./worker/**/*.rb"].each {|f| require f}
 runner = Worker::Runner.new(options)
 
 begin
