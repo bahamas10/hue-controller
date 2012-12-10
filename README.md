@@ -15,11 +15,19 @@ To view screenshots of the app in action, [click here](https://github.com/zanker
 
 Running
 -
-You will need ruby installed (this is all tested against ruby-1.9.3-p327, but any ruby-1.9.3 should work.
+For installing Ruby on Linux or OSX, try [RVM](https://rvm.io/)
+For Windows, try [Ruby Installer](http://rubyinstaller.org/). I haven't used this so no promises on how well it works.
 
-If you don't have bundler installed yet, you will need to do `gem install bundler` before running `bundle install`.
+Any Ruby 1.9.3+ version should work, JRuby 1.7.x is optimal for the background worker, but not required. You might be able to use a 1.8.7 version of Ruby, but I've not tested it.
 
-Run `bundle install` in the directory to install the necessary gems, and then just `thin -R config.ru -p 9200 -e production start` and that's it! Navigate to localhost:9200 and enjoy
+Got Ruby installed? Next:
+
+1) Run `gem install bundler` if you don't have bundler installed (when in doubt, you can just run it safely)
+2) Run `bundle install`
+3) Run `thin -R config.ru -p 9200 -e production start`, this starts the web server
+4) Run `ruby worker.rb --cores 2 -e production`, this starts the background worker
+5) Go to `http://localhost:9200`
+6) Enjoy!
 
 Contributing
 -
