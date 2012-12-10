@@ -1,0 +1,123 @@
+%h1 Light Effects
+%p Setup a special effect such as pulsing lights between colors!
+
+%p
+  %strong.text-info
+    Note!
+  The background worker is required for this. Run
+  %strong RUBY_ENV=production ruby worker.rb
+  to start the worker.
+
+%p
+  %strong.text-info
+    (Second) Note
+  Currently you can only run one effect at a time. This will be improved later.
+
+- unless self.jobs.empty?
+  .pull-right
+    %a.btn.btn-danger.push-bottom#stop-all{:href => "#", "data-loading-text" => "Halting..."}
+      Halt #{self.jobs.length} #{self.jobs.length == 1 ? "Effect" : "Effects"}
+
+%form.form-horizontal{:action => "POST"}
+  .row
+    .span12#error.hide
+      .alert.alert-error
+        %strong Error!
+        %span
+
+    .span12.push-bottom
+      %h4 Step 1. Select the lights and/or groups to include
+
+      .row
+        .span6
+          %h3 Lights
+          %select#lights{:multiple => true}
+            - self.hub_data[:lights].each do |id, light|
+              %option{:value => id}
+                = light[:name]
+
+        .span6
+          %h3 Groups
+          %select#groups{:multiple => true}
+            - self.hub_data[:groups].each do |id, group|
+              %option{:value => id}
+                = group[:name]
+                (#{group[:lights].length} lights)
+
+    .span12
+      %h4 Step 2. Configure the effect
+
+      .control-group
+        %label.control-label{:for => "name"} Name
+        .controls
+          %input.input-small{:type => "text", :id => "name", :placeholder => "Deep Blue"}
+          %span.help-inline
+            Helps identify the effect later on.
+
+      .tabbable.tabs-left
+        %ul.nav.nav-tabs
+          %li.active
+            %a{:href => "#pulse", "data-toggle" => "pulse"} Pulse
+
+        .tab-content
+          .tab-pane.active#pulse
+            %p
+              %strong Pulses from start -> end using the given transition time. Repeats until total runs is hit.
+
+            .control-group
+              %label.control-label{:for => "start_color"} Start Color
+              .controls
+                %input.input-small.colorpicker{:type => "text", :id => "start_color", :value => "#AA00FF"}
+                %span.help-inline
+                  What color to start the transition at
+
+            .control-group
+              %label.control-label{:for => "end_color"} End Color
+              .controls
+                %input.input-small.colorpicker{:type => "text", :id => "end_color", :value => "#0000FF"}
+                %span.help-inline
+                  What color to end the transition at
+
+
+            .control-group
+              %label.control-label{:for => "alternate"} Alternate Initial Color
+              .controls
+                %select.input-small{:id => "alternate"}
+                  %option{:value => "true"} Yes
+                  %option{:value => "false", :selected => true} No
+                %span.help-inline Half the lights/groups will start on the end color and transition to the start.
+
+      .control-group
+        %label.control-label{:for => "transitiontime"} Transition Time
+        .controls
+          %input.input-mini{:type => "number", :id => "transitiontime", :value => 50, :placeholder => 10}
+          %span.help-inline
+            In 1/10s of a second (5 = 0.5 seconds, 10 = 1 second, 50 = 5 seconds)
+
+      .control-group
+        %label.control-label{:for => "times_to_run"} Total Runs
+        .controls
+          %select.input-small{:id => "times_to_run"}
+            %option{:value => 1} Once
+            - (1..10).each do |i|
+              %option{:value => i * 10} #{i * 10} times
+            - (2..10).each do |i|
+              %option{:value => i * 100} #{i * 100} times
+
+          %span.help-inline
+            How many times to run. Start -> End and End -> Start is one run.
+
+    .span12
+      %h4 Step 3. Sit back and enjoy
+
+      .control-group
+        .controls
+          %input.btn.btn-success.push-right{:type => :submit, :value => "Run Immediately", "data-loading-text" => "Saving..."}
+          %input.btn.btn-inverse#save-set{:type => :button, :value => "Save as a Set", "data-loading-text" => "Saving..."}
+
+#finished.modal.hide
+  .modal-header
+    %h3 Done!
+  .modal-body
+  .modal-footer
+    %a.btn.btn-inverse{:href => "/effects"} Close

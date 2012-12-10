@@ -36,3 +36,7 @@ table {
 .push-bottom {
   margin-bottom: 12px;
 }
+
+.push-right {
+  margin-right: 12px;
+}
