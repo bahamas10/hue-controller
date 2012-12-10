@@ -69,19 +69,14 @@ class HueController < Sinatra::Base
     end
   end
 
-  # The background worker will
-  def queue_job(job)
-    self.jobs = YAML::load_file("./config/jobs.yml")
-    self.jobs.push(job)
-
-    File.open("./config/jobs.yml", "w+") do |f|
-      f.write(self.jobs.to_yaml)
+  def update_jobs(reload=true)
+    if reload
+      self.jobs = YAML::load_file("./config/jobs.yml")
     end
-  end
 
-  def remove_job(id)
-    self.jobs = YAML::load_file("./config/jobs.yml")
-    self.jobs.delete_if {|v| v[:id] == id}
+    if block_given?
+      yield
+    end
 
     File.open("./config/jobs.yml", "w+") do |f|
       f.write(self.jobs.to_yaml)
