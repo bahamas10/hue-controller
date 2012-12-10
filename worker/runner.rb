@@ -4,7 +4,7 @@ module Worker
 
     def initialize(options)
       if File.exists?("./config/job_states.yml")
-        @job_states = YAML::load_file("./config/job_states.yml")
+        @job_states = YAML::load_file("./config/job_states.yml") || {}
       else
         @job_states = {}
       end

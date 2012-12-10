@@ -74,7 +74,7 @@ class HueController < Sinatra::Base
   def update_jobs(reload=true)
     if reload
       if self.jobs_mtime != File.mtime("./config/jobs.yml")
-        self.jobs = YAML::load_file("./config/jobs.yml")
+        self.jobs = YAML::load_file("./config/jobs.yml") || []
       end
     end
 
