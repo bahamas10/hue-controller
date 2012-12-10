@@ -1,6 +1,8 @@
 require "net/http"
 class HubCommunicator
-  def initialize(config)
+  attr_writer :config
+
+  def initialize(config=nil)
     @config = config
   end
 
