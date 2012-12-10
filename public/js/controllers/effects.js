@@ -41,6 +41,7 @@
     data.name = name;
     data.lights = lights;
     data.groups = groups;
+    data.finish_off = $("#finish_off").val() == "true";
     data.times_to_run = parseInt($("#times_to_run").val()) || 1;
     data.transitiontime = parseInt($("#transitiontime").val()) || 10;
 

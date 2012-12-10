@@ -88,6 +88,15 @@
                 %span.help-inline Half the lights/groups will start on the end color and transition to the start.
 
       .control-group
+        %label.control-label{:for => "finish_off"} Turn Off on Finish
+        .controls
+          %select.input-small{:id => "finish_off"}
+            %option{:value => "true"} Yes
+            %option{:value => "false", :selected => true} No
+          %span.help-inline
+            Once this effect finishes, the lights will be turned off.
+
+      .control-group
         %label.control-label{:for => "transitiontime"} Transition Time
         .controls
           %input.input-mini{:type => "number", :id => "transitiontime", :value => 50, :placeholder => 10}

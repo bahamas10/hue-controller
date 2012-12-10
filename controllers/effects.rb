@@ -7,6 +7,7 @@ class HueController < Sinatra::Base
     effect = {}
     effect[:name] = params[:name].to_s
     effect[:type] = :pulse
+    effect[:finish_off] = params[:finish_off] == "true"
 
     if params[:lights].is_a?(Array)
       effect[:lights] = params[:lights].map {|l| l.to_i}

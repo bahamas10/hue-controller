@@ -3,6 +3,11 @@ module Worker
     def initial_states
       data = {:transitiontime => @job[:transitiontime]}
 
+      # This is the last run, so we need to turn it off
+      if @job[:finish_off] and @job_state[:runs_left] <= 1
+        data[:on] = false
+      end
+
       states = []
       @job[:lights].each {|l| states.push(data.merge(:light => l))}
       @job[:groups].each {|g| states.push(data.merge(:group => g))}
