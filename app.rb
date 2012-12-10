@@ -1,6 +1,5 @@
 class HueController < Sinatra::Base
-  attr_reader :config, :hue_data
-  attr_accessor :hub_data, :jobs
+  attr_accessor :config, :hue_data, :communicator, :hub_data, :jobs
   set :public_folder, "public"
 
   configure :development do
@@ -8,6 +7,7 @@ class HueController < Sinatra::Base
     register Sinatra::Reloader
 
     also_reload "./controllers/*.rb"
+    also_reload "./helpers/*.rb"
     also_reload "./app.rb"
   end
 
@@ -15,9 +15,9 @@ class HueController < Sinatra::Base
     super
 
     if File.exists?("./config/config.yml")
-      @config = YAML::load_file("./config/config.yml")
+      self.config = YAML::load_file("./config/config.yml")
     else
-      @config = {}
+      self.config = {}
     end
 
     if File.exists?("./config/hub_data.yml")
@@ -27,7 +27,8 @@ class HueController < Sinatra::Base
     end
 
     self.jobs = YAML::load_file("./config/jobs.yml")
-    @hue_data = YAML::load_file("./config/hue.yml")
+    self.communicator = HubCommunicator.new(self.config)
+    self.hue_data = YAML::load_file("./config/hue.yml")
   end
 
   protected
@@ -43,10 +44,10 @@ class HueController < Sinatra::Base
   end
 
   def save_config(data)
-    @config.merge!(data)
+    self.config.merge!(data)
 
     File.open("./config/config.yml", "w+") do |f|
-      f.write(@config.to_yaml)
+      f.write(self.config.to_yaml)
     end
   end
 

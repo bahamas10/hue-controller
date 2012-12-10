@@ -11,6 +11,8 @@ unless File.exists?("./config/jobs.yml")
   File.open("./config/jobs.yml", "w+") {|f| f.write([].to_yaml)}
 end
 
+Dir["./helpers/*.rb"].each {|f| require f}
+
 require "./app"
 Dir["./controllers/*.rb"].each {|f| require f}
 
