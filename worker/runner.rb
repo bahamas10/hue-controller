@@ -26,11 +26,18 @@ module Worker
         load_if_changed(:hub_config, "./config/config.yml")
 
         # Try and find a job
-        active_job = nil
+        active_job, next_run = nil, nil
+        now = Time.now.utc
+
         @job_mutex.synchronize do
           @jobs.each do |job|
             # Not time to run this yet
-            if @job_states[job[:id]][:run_at] > Time.now.utc or @job_states[job[:id]][:active]
+            if @job_states[job[:id]][:run_at] > now or @job_states[job[:id]][:active]
+              # Figure out when the next job is going to run
+              if !next_run or next_run < @job_states[job[:id]][:run_at]
+                next_run = @job_states[job[:id]][:run_at]
+              end
+
               next
             end
 
@@ -47,13 +54,28 @@ module Worker
 
         # Can't queue anymore jobs, give it some time
         if job_status == :capacity
-          puts "* At thread capacity, "
+          puts "* At thread capacity, waiting for something to open up"
           sleep 5
 
         # Nothing found, sleep for a while
         elsif @jobs.empty?
           puts "* No jobs found, sleeping for 10 seconds"
           sleep 10
+
+        # No job fond
+        elsif !active_job
+          duration = (next_run - now).round
+          if duration > 20
+            duration -= 10
+
+            if duration >= 1
+              puts "* Next job isn't ready yet, waiting #{duration} #{duration == 1 ? "second" : "seconds"}"
+              sleep duration
+            end
+
+          else
+            sleep 1
+          end
         end
       end
     end
