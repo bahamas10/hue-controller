@@ -42,7 +42,7 @@
             - self.hub_data[:groups].each do |id, group|
               %option{:value => id}
                 = group[:name]
-                (#{group[:lights].length} lights)
+                (#{group[:lights].length} #{group[:lights].length == 1 ? "light" : "lights"})
 
     .span12
       %h4 Step 2. Configure the effect
