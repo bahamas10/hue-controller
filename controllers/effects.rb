@@ -9,10 +9,14 @@ class HueController < Sinatra::Base
 
     if params[:lights].is_a?(Array)
       effect[:lights] = params[:lights].map {|l| l.to_i}
+    else
+      effect[:lights] = []
     end
 
     if params[:groups].is_a?(Array)
       effect[:groups] = params[:groups].map {|g| g.to_i}
+    else
+      effect[:groups] = []
     end
 
     effect[:times_to_run] = params[:times_to_run].to_i
