@@ -55,7 +55,7 @@ class HueController < Sinatra::Base
     self.hub_data.merge!(data)
 
     current_hash = self.hub_data.delete(:hash)
-    data_hash = Digest::MD5.hexdigest(self.hub_data.to_s)
+    data_hash = Digest::SHA1.hexdigest(self.hub_data.to_s)
     # No change
     if data_hash == current_hash
       self.hub_data[:hash] = current_hash
