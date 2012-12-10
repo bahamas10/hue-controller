@@ -3,11 +3,14 @@ require "yaml"
 require "json"
 require "optparse"
 
-options = {:cores => 2}
+options = {:cores => 2, :env => "development"}
 OptionParser.new do |opts|
-  opts.banner = "Usage: worker.rb [options]"
+  opts.banner = "Usage: ruby worker.rb [options]"
   opts.on("-c", "--cores CORES", "how many cores this computer has") {|c| options[:cores] = c.to_i}
+  opts.on("-e", "--environment ENV", "what environment to run as") {|e| options[:env] = e}
 end.parse!(ARGV)
+
+ENV["RUBY_ENV"] = options[:env]
 
 $stdout.sync = true
 
