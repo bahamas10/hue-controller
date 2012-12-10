@@ -6,6 +6,7 @@ class HueController < Sinatra::Base
   post "/effect/pulse" do
     effect = {}
     effect[:name] = params[:name].to_s
+    effect[:type] = :pulse
 
     if params[:lights].is_a?(Array)
       effect[:lights] = params[:lights].map {|l| l.to_i}
