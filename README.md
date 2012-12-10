@@ -23,10 +23,15 @@ Any Ruby 1.9.3+ version should work, JRuby 1.7.x is optimal for the background w
 Got Ruby installed? Next:
 
 1) Run `gem install bundler` if you don't have bundler installed (when in doubt, you can just run it safely)
+
 2) Run `bundle install`
+
 3) Run `thin -R config.ru -p 9200 -e production start`, this starts the web server
+
 4) Run `ruby worker.rb --cores 2 -e production`, this starts the background worker
+
 5) Go to `http://localhost:9200`
+
 6) Enjoy!
 
 Contributing
