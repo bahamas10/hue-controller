@@ -10,7 +10,7 @@
   %thead
     %tr
       %th Name
-      %th.center Lights
+      %th.center State
       %th.center Apply + Off Rest
       %th.center Apply + Keep Rest
       %th.center Set Off
@@ -21,8 +21,11 @@
       %tr
         %td= set[:name]
         %td.center
-          %a.view-state{"data-set" => id}
-            View
+          - if set[:effect]
+            Effect
+          - else
+            %a.view-state{"data-set" => id}
+              View
 
         %td.center
           %a.btn.btn-mini.apply{"data-set" => id, "data-mode" => "off", "data-loading-text" => "Applying"}

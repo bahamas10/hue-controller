@@ -51,12 +51,17 @@ class HueController < Sinatra::Base
 
   # Turn all the lights in a set off
   delete "/set/apply/:id" do
-    require "net/http"
-    http = Net::HTTP.new(self.config[:ip], 80)
+    set = self.config[:sets][params[:id].to_i]
 
-    self.config[:sets][params[:id].to_i][:lights].each do |light|
-      http.request_put("/api/#{self.config[:apikey]}/lights/#{light[:light]}/state", {:on => false}.to_json)
+    states = []
+    if set[:effect]
+      set[:lights].each {|l| states.push(:light => l, :on => false)}
+      set[:groups].each {|g| states.push(:group => g, :on => false)}
+    else
+      set[:lights].each {|l| states.push(:light => l[:light], :on => false)}
     end
+
+    self.communicator.apply_states(states)
 
     204
   end
@@ -65,29 +70,53 @@ class HueController < Sinatra::Base
   post "/set/apply/:id" do
     set = self.config[:sets][params[:id].to_i]
 
-    require "net/http"
-    http = Net::HTTP.new(self.config[:ip], 80)
-
-    # Turn off any lights not mentioned in this group
+    # Turn off any lights not mentioned in this set
     if params[:mode] == "off"
-      active = {}
-      set[:lights].each {|l| active[l[:light]] = true}
+      active_lights, active_groups = {}, {}
 
-      self.hub_data[:lights].each_key do |id|
-        next if active[id]
-
-        http.request_put("/api/#{self.config[:apikey]}/lights/#{id}/state", {:on => false}.to_json)
+      if set[:effect]
+        set[:lights].each {|l| active_lights[l] = true}
+        set[:groups].each {|g| active_groups[g] = true}
+      else
+        set[:lights].each {|l| active_lights[l[:light]] = true}
       end
+
+      states = []
+      unless active_lights.empty?
+        self.hub_data[:lights].each do |id|
+          states.push(:light => id, :on => false) unless active_lights[id]
+        end
+      end
+
+      unless active_groups.empty?
+        self.hub_data[:groups].each do |id|
+          states.push(:group => id, :on => false) unless active_lights[id]
+        end
+      end
+
+      self.communicator.apply_states(states)
     end
 
-    # Apply the group state
-    set[:lights].each do |light|
-      data = light.dup
-      data.delete(:colormode)
+    # Need to figure out the initial state so it can be pushed
+    if set[:effect]
+      effect = self.communicator.apply_initial_effect(set)
+      self.update_jobs do
+        self.jobs.delete_if {|v| v[:id] == effect[:id]}
+        self.jobs.push(effect.merge(:reset_state => true))
+      end
 
-      http.request_put("/api/#{self.config[:apikey]}/lights/#{data.delete(:light)}/state", data.to_json)
+    # Straight set, nothing fancy
+    else
+      states = set[:lights].map do |light|
+        state = light.dup
+        state.delete(:colormode)
+        state
+      end
+
+      self.communicator.apply_states(states)
     end
 
     204
   end
+
 end
