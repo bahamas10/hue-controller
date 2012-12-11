@@ -22,7 +22,7 @@
   .control-group
     %label.control-label{:for => "ip"} Hub IP
     .controls
-      %input.input-medium{:type => :text, :id => "ip", :value => self.config[:ip], :placeholder => "192.168.1.1"}
+      %input.input-medium{:type => :text, :id => "ip", :placeholder => "192.168.1.1", :value => self.config[:ip]}
       %input.btn.btn-info#discover{:type => :button, :value => "Find IP", "data-loading-text" => "Finding..."}
       %span.help-inline
 

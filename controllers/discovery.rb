@@ -14,7 +14,7 @@ class HueController < Sinatra::Base
             res = http.request_get("/description.xml")
             # Quick way of confirming it, better ways of doing it naturally
             if res.body =~ /Philips hue/i
-              return [200, meta[2]]
+              break [200, meta[2]]
             end
           end
         end
