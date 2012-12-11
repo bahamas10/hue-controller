@@ -1,5 +1,5 @@
 class HueController < Sinatra::Base
   get "/schedules" do
-    haml :schedules, :locals => {:action => "schedules"}
+    haml :layout, :layout => false, :locals => {:action => :schedules}
   end
 end

@@ -1,5 +1,5 @@
 class HueController < Sinatra::Base
   get "/" do
-    haml :index, :locals => {:action => "index"}
+    haml :layout, :layout => false, :locals => {:action => :index}
   end
 end

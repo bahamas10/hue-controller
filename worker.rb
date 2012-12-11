@@ -1,7 +1,7 @@
 require "rubygems"
-require "yaml"
-require "json"
 require "optparse"
+require "./worker-initializer"
+ConfigFile.path = "./config/"
 
 options = {:cores => 2, :env => "development"}
 OptionParser.new do |opts|
@@ -10,14 +10,6 @@ OptionParser.new do |opts|
   opts.on("-e", "--environment ENV", "what environment to run as") {|e| options[:env] = e}
 end.parse!(ARGV)
 
-ENV["RUBY_ENV"] = options[:env]
-
-$stdout.sync = true
-
-require "./worker/job_helper.rb"
-
-Dir["./helpers/*.rb"].each {|f| require f}
-Dir["./worker/**/*.rb"].each {|f| require f}
 runner = Worker::Runner.new(options)
 
 begin

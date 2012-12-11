@@ -1,6 +1,6 @@
 class HueController < Sinatra::Base
   get "/config" do
-    haml :config, :locals => {:action => "config", :no_action_css => true}
+    haml :layout, :layout => false, :locals => {:action => :config, :skip_action_css => true}
   end
 
   put "/cache-hub" do

@@ -3,11 +3,7 @@ module Worker
     attr_reader :job_states, :communicator
 
     def initialize(options)
-      if File.exists?("./config/job_states.yml")
-        @job_states = YAML::load_file("./config/job_states.yml") || {}
-      else
-        @job_states = {}
-      end
+      @job_states = ConfigFile.load(:job_states) || {}
 
       @mtimes = {}
       @processor = Processor.new(self, options)
@@ -20,10 +16,10 @@ module Worker
 
       until @stopped do
         # Check for jobs change
-        load_if_changed(:jobs, "./config/jobs.yml")
+        load_if_changed(:jobs)
 
         # Check for config change
-        load_if_changed(:hub_config, "./config/config.yml")
+        load_if_changed(:hub_config, :config)
 
         # Try and find a job
         active_job, next_run = nil, nil
@@ -95,7 +91,7 @@ module Worker
     # Remove a job
     def remove_job(id)
       # Do one last check to see if it changed before we remove the job
-      load_if_changed(:jobs, "./config/jobs.yml")
+      load_if_changed(:jobs)
 
       @job_mutex.synchronize do
         @jobs.delete_if do |job|
@@ -110,8 +106,8 @@ module Worker
         @job_states.delete(id)
       end
 
-      @mtimes[:jobs] = File.mtime("./config/jobs.yml")
-      File.open("./config/jobs.yml", "w+") {|f| f.write(@jobs.to_yaml)}
+      @mtimes[:jobs] = ConfigFile.mtime(:jobs)
+      ConfigFile.write(:jobs, @jobs)
     end
 
     private
@@ -128,10 +124,7 @@ module Worker
         @job_states.each_value {|v| v.delete(:active)}
       end
 
-      # Flush to disk
-      File.open("./config/job_states.yml", "w+") do |f|
-        f.write(@job_states.to_yaml)
-      end
+      ConfigFile.write(:job_states, @job_states)
     end
 
     # Check if we need to load the initial state on something
@@ -142,7 +135,9 @@ module Worker
       end
     end
 
-    def load_if_changed(type, path)
+    def load_if_changed(type, file=type)
+      path = ConfigFile.file_path(file)
+
       mtime = File.mtime(path)
       if @mtimes[type] == mtime
         return
@@ -160,7 +155,7 @@ module Worker
         end
       end
 
-      puts @mtimes[type] ? "* Reloaded #{path}" : "* Loaded #{path}"
+      puts @mtimes[type] ? "* Reloaded #{file}" : "* Loaded #{file}"
       @mtimes[type] = mtime
     end
   end

@@ -1,6 +1,6 @@
 class HueController < Sinatra::Base
   get "/sets" do
-    haml :sets, :locals => {:action => "sets"}
+    haml :layout, :layout => false, :locals => {:action => :sets}
   end
 
   # Create set

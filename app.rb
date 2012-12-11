@@ -1,6 +1,8 @@
 class HueController < Sinatra::Base
   attr_accessor :config, :hue_data, :communicator, :hub_data, :jobs, :jobs_mtime
-  set :public_folder, "public"
+
+  set :port, 9222
+  set :root, "./"
 
   configure :development do
     require "sinatra/reloader"
@@ -14,21 +16,10 @@ class HueController < Sinatra::Base
   def initialize
     super
 
-    if File.exists?("./config/config.yml")
-      self.config = YAML::load_file("./config/config.yml")
-    else
-      self.config = {}
-    end
-
-    if File.exists?("./config/hub_data.yml")
-      self.hub_data = YAML::load_file("./config/hub_data.yml")
-    else
-      self.hub_data = {:lights => {}, :groups => {}}
-    end
-
-    self.jobs = YAML::load_file("./config/jobs.yml")
-    self.jobs_mtime = File.mtime("./config/jobs.yml")
-    self.hue_data = YAML::load_file("./config/hue.yml")
+    self.config = ConfigFile.load(:config) || {}
+    self.hub_data = ConfigFile.load(:hub_data) || {:lights => {}, :groups => {}}
+    self.jobs = ConfigFile.load(:jobs) || []
+    self.hue_data = YAML::load_file(File.join("./", "data", "hue.yml"))
     self.communicator = HubCommunicator.new(self.config)
   end
 
@@ -47,9 +38,7 @@ class HueController < Sinatra::Base
   def save_config(data)
     self.config.merge!(data)
 
-    File.open("./config/config.yml", "w+") do |f|
-      f.write(self.config.to_yaml)
-    end
+    ConfigFile.write(:config, self.config)
   end
 
   # Save hub data
@@ -66,15 +55,13 @@ class HueController < Sinatra::Base
 
     self.hub_data[:hash] = data_hash
 
-    File.open("./config/hub_data.yml", "w+") do |f|
-      f.write(self.hub_data.to_yaml)
-    end
+    ConfigFile.write(:hub_data, self.hub_data)
   end
 
   def update_jobs(reload=true)
     if reload
-      if self.jobs_mtime != File.mtime("./config/jobs.yml")
-        self.jobs = YAML::load_file("./config/jobs.yml") || []
+      if self.jobs_mtime != ConfigFile.mtime(:jobs)
+        self.jobs = ConfigFile.load(:jobs) || []
       end
     end
 
@@ -82,10 +69,7 @@ class HueController < Sinatra::Base
       yield
     end
 
-    File.open("./config/jobs.yml", "w+") do |f|
-      f.write(self.jobs.to_yaml)
-    end
-
-    self.jobs_mtime = File.mtime("./config/jobs.yml")
+    ConfigFile.write(:jobs, self.jobs)
+    self.jobs_mtime = ConfigFile.mtime(:jobs)
   end
 end
