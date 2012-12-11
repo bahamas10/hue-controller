@@ -23,27 +23,27 @@
           %a.brand{:href => "/"} Hue Controller
 
           %ul.nav
-            %li{:class => action == :index ? :active : ""}
+            %li{:class => action == :index ? "active" : ""}
               %a{:href => "/"} Lights
 
           %ul.nav
-            %li{:class => action == :sets ? :active : ""}
+            %li{:class => action == :sets ? "active" : ""}
               %a{:href => "/sets"} Sets
 
           %ul.nav
-            %li{:class => action == :effects ? :active : ""}
+            %li{:class => action == :effects ? "active" : ""}
               %a{:href => "/effects"} Effects
 
           %ul.nav
-            %li{:class => action == :schedules ? :active : ""}
+            %li{:class => action == :schedules ? "active" : ""}
               %a{:href => "/schedules"} Schedules
 
           %ul.nav
-            %li{:class => action == :control ? :active : ""}
+            %li{:class => action == :control ? "active" : ""}
               %a{:href => "/control"} Control
 
           %ul.nav.pull-right
-            %li{:class => action == :config ? :active : ""}
+            %li{:class => action == :config ? "active" : ""}
               %a{:href => "/config"} Configuration
 
     .container
