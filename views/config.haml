@@ -1,8 +1,9 @@
+- unless self.config[:apikey]
+  .alert.alert-success
+    Before you can use this app, we need to be able to connect to the Hue hub. It'll only take a minute.
+
 %h1 Configuration
-- if self.config[:apikey]
-  %p Manage how this app connects to the Hue hub
-- else
-  %p Before you can use this app, we need to be able to connect to the Hue hub. It'll only take a minute.
+%p Manage how this app connects to the Hue hub
 
 #error.alert.alert-error.hide
   %strong Error!
