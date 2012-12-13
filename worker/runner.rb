@@ -9,6 +9,8 @@ module Worker
       @processor = Processor.new(self, options)
       @communicator = HubCommunicator.new
       @job_mutex = Mutex.new
+
+      ConfigFile.touch(:jobs)
     end
 
     def start
