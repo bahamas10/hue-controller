@@ -24,6 +24,14 @@ class HueController < Sinatra::Base
   end
 
   protected
+  def render_view(view, locals={})
+    if locals.delete(:layout) == false
+      haml view, :layout => false, :locals => locals
+    else
+      haml :layout, :layout => false, :locals => locals.merge(:action => view)
+    end
+  end
+
   def check_data(light, key)
     val = self.hue_data[key][:type] == :float ? light[key].to_f : light[key].to_i
     if val < self.hue_data[key][:min]

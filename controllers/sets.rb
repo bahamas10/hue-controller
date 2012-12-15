@@ -1,6 +1,6 @@
 class HueController < Sinatra::Base
   get "/sets" do
-    haml :layout, :layout => false, :locals => {:action => :sets}
+    render_view(:sets)
   end
 
   # Create set
@@ -38,7 +38,7 @@ class HueController < Sinatra::Base
 
   # Show the state of a set
   get "/set/state/:id" do
-    haml :set_state, :layout => false, :locals => {:set => self.config[:sets][params[:id].to_i]}
+    render_view(:sets, :layout => false, :set => self.config[:sets][params[:id].to_i])
   end
 
   # Delete set

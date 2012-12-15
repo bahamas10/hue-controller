@@ -1,6 +1,6 @@
 class HueController < Sinatra::Base
   get "/effects" do
-    haml :layout, :layout => false, :locals => {:action => :effects, :skip_action_css => true}
+    render_view(:effects, :skip_action_css => true)
   end
 
   post "/effect/pulse" do

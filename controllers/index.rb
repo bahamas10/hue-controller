@@ -4,6 +4,6 @@ class HueController < Sinatra::Base
       return redirect("/config")
     end
 
-    haml :layout, :layout => false, :locals => {:action => :index}
+    render_view(:index)
   end
 end
