@@ -59,5 +59,11 @@ module Worker
 
       states
     end
+
+    def save_state(state)
+      @state_mutex.synchronize do
+        @job_state.merge!(state)
+      end
+    end
   end
 end
