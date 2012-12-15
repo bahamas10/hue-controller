@@ -23,24 +23,39 @@
           %a.brand{:href => "/"} Hue Controller
 
           %ul.nav
-            %li{:class => action == :index ? "active" : ""}
-              %a{:href => "/"} Lights
+            %li.dropdown{:class => (action == :index or action == :sets) ? "active" : ""}
+              %a.dropdown-toggle{:href => "/", "data-toggle" => "dropdown"}
+                Lights
+                %span.caret
+              %ul.dropdown-menu
+                %li
+                  %a{:href => "/"} View All
+                %li
+                  %a{:href => "/sets"} Sets
+
+            %li.dropdown{:class => (action == :effects) ? "active" : ""}
+              %a.dropdown-toggle{:href => "/", "data-toggle" => "dropdown"}
+                Effects
+                %span.caret
+              %ul.dropdown-menu
+                %li
+                  %a{:href => "/effects"} New
 
           %ul.nav
-            %li{:class => action == :sets ? "active" : ""}
-              %a{:href => "/sets"} Sets
+            %li.dropdown{:class => (action == :control or action == :adv_control) ? "active" : ""}
+              %a.dropdown-toggle{:href => "/", "data-toggle" => "dropdown"}
+                Control
+                %span.caret
+              %ul.dropdown-menu
+                %li
+                  %a{:href => "/control"} Control
+                - if self.config[:advanced]
+                  %li
+                    %a{:href => "/adv-control"} Advanced Control
 
           %ul.nav
-            %li{:class => action == :effects ? "active" : ""}
-              %a{:href => "/effects"} Effects
-
-          %ul.nav
-            %li{:class => action == :schedules ? "active" : ""}
+            %li.dropdown{:class => action == :schedules ? "active" : ""}
               %a{:href => "/schedules"} Schedules
-
-          %ul.nav
-            %li{:class => action == :control ? "active" : ""}
-              %a{:href => "/control"} Control
 
           %ul.nav.pull-right
             %li{:class => action == :config ? "active" : ""}
