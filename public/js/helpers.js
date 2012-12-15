@@ -139,6 +139,44 @@ var Helper = {
     return $.ajax(url, args);
   },
 
+  rgb_to_hex: function(rgb) {
+    for( var key in rgb ) {
+      var hex = rgb[key].toString(16);
+      if( hex.length == 1 ) hex = "0" + hex;
+      rgb[key] = hex;
+    }
+
+    return "#" + rgb.r + rgb.g + rgb.b;
+  },
+
+  // Credit to https://github.com/AaronH/RubyHue, which got it from http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code
+  ct_to_rgb: function(ct) {
+    ct = (1000000 / ct) / 100;
+
+    var rgb = {};
+    rgb.r = ct <= 66 ? 255 : 329.698727446 * Math.pow((ct - 60), -0.1332047592);
+
+    if( ct <= 66 ) {
+      rgb.g = 99.4708025861 * Math.log(ct) - 161.1195681661;
+    } else {
+      rgb.g = 288.1221695283 * Math.pow((ct - 60), -0.0755148492);
+    }
+
+    if( ct >= 66 ) {
+      rgb.b = 255;
+    } else if( ct <= 19 ) {
+      rgb.b = 0;
+    } else {
+      rgb.b = 138.5177312231 * Math.log(ct - 10) - 305.0447927307;
+    }
+
+    for( var type in rgb ) {
+      rgb[type] = Math.min(255, Math.max(0, Math.round(rgb[type])));
+    }
+
+    return rgb;
+  },
+
   // Credit to https://github.com/Shushik/i-color
   xy_to_rgb: function(xy) {
     var x = xy[0], y = xy[1], z = (1 - xy[0] - xy[1]);
@@ -201,7 +239,7 @@ var Helper = {
       }
 
       if( hsv.v < 0 ) hsv.v += 360;
-      hsv.h = parseInt(hsv.h * 60 * 182.04);
+      hsv.h = parseInt(hsv.h * 60 * HueData.hue.base);
     }
 
     hsv.s = parseInt(hsv.s * 254);
@@ -209,25 +247,67 @@ var Helper = {
     return hsv;
   },
 
-  // Credit to https://github.com/AaronH/RubyHue, which got it from http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code
-  ct_to_rgb: function(ct) {
-    ct = (1000000 / ct) / 100;
-
+  hsv_to_rgb: function(hsv) {
     var rgb = {};
-    rgb.r = ct <= 66 ? 255 : 329.698727446 * Math.pow((ct - 60), -0.1332047592);
+    var h = (hsv.h / HueData.hue.base) / 60;
+    var s = hsv.s / HueData.sat.max;
+    var v = hsv.v / HueData.bri.max;
 
-    if( ct <= 66 ) {
-      rgb.g = 99.4708025861 * Math.log(ct) - 161.1195681661;
-    } else {
-      rgb.g = 288.1221695283 * Math.pow((ct - 60), -0.0755148492);
-    }
+    if( s == 0 ) {
+      if( v == 0 ) {
+        rgb.r = rgb.g = rgb.b = 0;
+      } else {
+        rgb.r = rgb.g = rgb.b = v * 255 / 100;
+      }
 
-    if( ct >= 66 ) {
-      rgb.b = 255;
-    } else if( ct <= 19 ) {
-      rgb.b = 0;
     } else {
-      rgb.b = 138.5177312231 * Math.log(ct - 10) - 305.0447927307;
+      var i = Math.floor(h);
+      var f = h - i;
+      var p = v * (1 - s);
+      var q = v * (1 - (s * f));
+      var t = v * (1 - (s * (1 - f)));
+
+      switch( i ) {
+        case 0:
+          rgb.r = v;
+          rgb.g = t;
+          rgb.b = p;
+          break;
+
+        case 1:
+          rgb.r = q;
+          rgb.g = v;
+          rgb.b = p;
+          break;
+
+        case 2:
+          rgb.r = p;
+          rgb.g = v;
+          rgb.b = t;
+          break;
+
+        case 3:
+          rgb.r = p;
+          rgb.g = q;
+          rgb.b = v;
+          break;
+
+        case 4:
+          rgb.r = t;
+          rgb.g = p;
+          rgb.b = v;
+          break;
+
+        case 5:
+          rgb.r = v;
+          rgb.g = p;
+          rgb.b = q;
+          break;
+      }
+
+      rgb.r = parseInt(rgb.r * 255);
+      rgb.g = parseInt(rgb.g * 255);
+      rgb.b = parseInt(rgb.b * 255);
     }
 
     for( var type in rgb ) {
@@ -235,28 +315,5 @@ var Helper = {
     }
 
     return rgb;
-  },
-
-  // From http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
-  // so credit to him for the implementation.
-  rgb_to_hsl: function(r, g, b) {
-    r /= 255, g /= 255, b /= 255;
-    var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
-
-    if(max == min){
-        h = s = 0; // achromatic
-    }else{
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch(max){
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-        }
-        h /= 6;
-    }
-
-    return [h, s, l];
   }
 };
