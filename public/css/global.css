@@ -40,3 +40,44 @@ table {
 .push-right {
   margin-right: 12px;
 }
+
+.slider {
+  margin: 8px 0 8px 0;
+}
+
+.slider > .dragger {
+  background: #FFFFFF;
+  background: linear-gradient(top, #FFFFFF, #BABABA);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 1);
+
+  border-radius: 10px;
+  border: 1px solid #2E2E2E;
+
+  height: 12px;
+  width: 12px;
+}
+
+.slider > .dragger:hover {
+  background: #E3E3E3;
+  background: linear-gradient(top, #D1D1D1, #E3E3E3);
+}
+
+.slider-bri > .track {
+  background: -webkit-linear-gradient(left, #000000, #FFFFFF);
+  background: -moz-linear-gradient(left, #000000, #FFFFFF);
+  background: linear-gradient(left, #000000, #FFFFFF);
+
+  border-radius: 4px;
+
+  border: 1px solid #330101;
+  height: 10px;
+}
+
+.slider-ct > .track {
+  background: -webkit-linear-gradient(left, rgb(255, 254, 250), rgb(255, 137, 14));
+
+  border-radius: 4px;
+
+  border: 1px solid #330101;
+  height: 10px;
+}

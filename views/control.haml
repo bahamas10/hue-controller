@@ -1,0 +1,51 @@
+%h1 Control
+%p Control your hue lights, either per light or by group.
+%p
+  %strong Brightness can be changed
+
+.tabbable.tabs
+  %ul.nav.nav-tabs
+    %li.active
+      %a{:href => "#lights", "data-toggle" => "lights"} Lights
+    %li
+      %a{:href => "#groups", "data-toggle" => "groups"} Groups
+
+  #loading
+    %strong
+      Give us a second, we're loading the state of all the lights/groups.
+
+  .tab-content.hide
+    - [:lights, :groups].each do |type|
+      .tab-pane{:id => type, :class => type == :lights ? "active" : ""}
+        %p
+          %strong Checking multiple #{type} will let you control all of them at once.
+
+        %div.push-bottom
+          %a.btn.btn-mini.btn-success#select-all{:href => "#"}
+            Select all
+          %a.btn.btn-mini.btn-danger#unselect-all{:href => "#"}
+            Unselect All
+
+        %form
+          - self.hub_data[type].each do |id, data|
+            .group{"data-id" => id, "data-type" => type}
+              %label.header
+                %input{:type => :checkbox, :value => "1", :checked => false}
+                %strong
+                  = data[:name]
+
+              .colors
+                %span Color
+                %input.input-small.picker{:type => :text}
+
+                .or
+                  %strong Or
+
+                %span Color Temperature
+                %input.ct{:type => :text, "data-slider-range" => "#{self.hue_data[:ct][:min]},#{self.hue_data[:ct][:max]}", "data-slider-step" => "1", "data-slider" => true, "data-slider-theme" => "ct"}
+
+                %span Brightness
+                %input.bri{:type => :text, "data-slider-range" => "#{self.hue_data[:bri][:min]},#{self.hue_data[:bri][:max]}", "data-slider-step" => "1", "data-slider" => true, "data-slider-theme" => "bri"}
+
+              .control-with.hide
+                %strong

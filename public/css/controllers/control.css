@@ -1,0 +1,40 @@
+.group {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #999999;
+  border-radius: 2px;
+  padding: 6px;
+  margin-bottom: 14px;
+  margin-right: 14px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.group .header input[type='checkbox'] {
+  vertical-align: top;
+  height: 16px;
+  width: 16px;
+}
+
+.group .header strong {
+  vertical-align: middle;
+}
+
+.group .picker {
+  margin-bottom: 0;
+  padding: 0 2px 0 2px;
+}
+
+.group .slider {
+  width: 188px !important;
+}
+
+.group .colors {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.group .colors .or {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
