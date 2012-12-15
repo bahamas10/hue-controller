@@ -109,9 +109,10 @@
       return;
     }
 
+    scope.find("input[type='submit']").button("loading");
     $.ajax(scope.attr("action"), {
       type: "POST",
-      data: {ip: ip, username: $("#username").val()},
+      data: {ip: ip, advanced: $("#advanced").val(), username: $("#username").val()},
       success: function() {
         $("#auth-modal").modal("hide");
         window.location = "/";

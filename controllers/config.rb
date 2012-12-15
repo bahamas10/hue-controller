@@ -17,7 +17,7 @@ class HueController < Sinatra::Base
   end
 
   post "/config" do
-    self.save_config(:ip => params[:ip].to_s, :apikey => params[:username].to_s)
+    self.save_config(:ip => params[:ip].to_s, :apikey => params[:username].to_s, :advanced => params[:advanced] == "true")
     204
   end
 

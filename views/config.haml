@@ -34,6 +34,14 @@
       %span.help-inline Identifies the API Key on the hub
 
   .control-group
+    %label.control-label{:for => "advanced"} Advanced Options
+    .controls
+      %select#advanced.input-small
+        %option{:value => "false", :selected => !self.config[:advanced] ? true : nil} No
+        %option{:value => "true", :selected => self.config[:advanced] ? true : nil} Yes
+      %span.help-inline Enables more advanced control panels. Not needed in most cases.
+
+  .control-group
     .controls
       %input{:type => :submit, :class => :btn, :value => "Configure", "data-auth-text" => "Authorizing...", "data-loading-text" => "Saving..."}
 
