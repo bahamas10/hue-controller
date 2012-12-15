@@ -102,17 +102,10 @@
 
     // Convert the hex color into the hue/sat/bri fields
     if( data.colorpicker ) {
-      // Abuse the fact that browsers return rgb(#, #, #) when we enter a hex color
-      $("#job_colorpicker").css({"background-color": data.colorpicker});
-      var rgb = $("#job_colorpicker").css("background-color");
-      $("#job_colorpicker").css({"background-color": ""});
-      rgb = rgb.match(/rgb\(([0-9]+), ([0-9]+), ([0-9]+)\)/);
-
-      var color = Helper.rgb_to_hsl(parseInt(rgb[1]), parseInt(rgb[2]), parseInt(rgb[3]));
-
-      data.hue = Math.round((color[0] * 360) * HueData.hue.base);
-      data.sat = Math.round(color[1] * 254);
-      data.bri = Math.round(color[2] * 254);
+      var color = Helper.hex_to_hsv(data.colorpicker);
+      data.hue = color.h;
+      data.sat = color.s;
+      data.bri = color.v;
     }
 
     // Figure out the date to schedule (if any)
