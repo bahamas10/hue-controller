@@ -1,5 +1,11 @@
+Note!
+=
+I rewrote most of this as an app that is far more user friendly. If you just want something that works and has far more features and is easier to use, take a look at http://huelightsapp.com.
+
+
+
 Overview
-===
+-
 With this, you get full control over your Hue light bulbs. You can easily view light status, do complex controls of your lights such as pulsing a color.
 
 Sets let you save a light configuration and then easily restore or turn it off later. You can even use this on simple browsers like a Kindle. No need to find your phone to turn on reading lights, or turn them off after you're done.
