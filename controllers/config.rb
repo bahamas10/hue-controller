@@ -4,12 +4,15 @@ class HueController < Sinatra::Base
   end
 
   put "/cache-hub" do
-    lights = {}
-    params[:lights].each {|k, v| lights[k.to_s] = {:name => v["name"].to_s}}
+    lights = params[:lights] || {}
+    lights.each do |k, v|
+      lights[k.to_s] = {:name => v["name"].to_s}
+    end
 
-    groups = {}
-    params[:groups].each do |k, v|
-      groups[k] = {:name => v["name"], :lights => v["lights"] ? v["lights"].map {|l| l.to_i} : []}
+    groups = params[:groups] || {}
+    groups.each do |k, v|
+      group_lights = v["lights"] ? v["lights"].map {|l| l.to_i} : []
+      groups[k] = {:name => v["name"], :lights => group_lights}
     end
 
     self.save_hub_data(:lights => lights, :groups => groups)
