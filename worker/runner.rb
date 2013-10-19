@@ -145,7 +145,7 @@ module Worker
         return
       end
 
-      data = YAML::load_file(path)
+      data = YAML::load_file(path) || {}
 
       if type == :hub_config
         @communicator.config = {:apikey => data[:apikey], :ip => data[:ip]}
